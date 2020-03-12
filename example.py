@@ -1,4 +1,4 @@
-from exchangeratesapi_io import Api
+from exchangeratesapi import Api
 
 api = Api()
 

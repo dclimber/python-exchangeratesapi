@@ -4,14 +4,14 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="python-exchangeratesapi-io",
+    name="python-exchangeratesapi",
     version="0.0.1",
     author="Dastan Abdrakhmanov",
     author_email="dastand.climber@gmail.com",
     description="Simple python api wrapper for exchangeratesapi.io",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/dclimber/python-exchangeratesapi-io",
+    url="https://github.com/dclimber/python-exchangeratesapi",
     packages=setuptools.find_packages(),
     install_requires=[
         'requests',
