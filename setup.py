@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="python-exchangeratesapi",
-    version="0.0.1",
+    version="0.0.2",
     author="Dastan Abdrakhmanov",
     author_email="dastand.climber@gmail.com",
     description="Simple python api wrapper for exchangeratesapi.io",
