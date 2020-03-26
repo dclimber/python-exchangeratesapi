@@ -16,6 +16,12 @@ class Api(object):
     }
     DATE_FORMAT = '%Y-%m-%d'
     MIN_YEAR = 1999
+    supported_currencies = None
+
+    def __init__(self):
+        """Populate supported currencies list."""
+        rates = self.get_rates()['rates']
+        self.supported_currencies = [cur for cur in rates]
 
     def _get_api_url(self, base, target_list, start_date, end_date):
         """Method to constuct api request url.
@@ -120,3 +126,6 @@ class Api(object):
         if end_date:
             return res['rates']
         return res['rates'][target]
+
+    def is_currency_supported(self, currency):
+        return currency in self.supported_currencies
