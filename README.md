@@ -8,7 +8,7 @@ pip install python-exchangeratesapi
 ```
 
 # Usage
-```
+```py
 from exchangeratesapi import Api
 
 api = Api()
