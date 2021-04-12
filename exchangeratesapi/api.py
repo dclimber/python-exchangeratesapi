@@ -110,10 +110,13 @@ class Api(object):
             (float): currency rate
 
         Examples:
-            >>> api.get_rate()
-            394.55
-            >>> api.get_rate('USD', 'EUR', date="2019-09-12")
-            0.897
+            ```
+            >>> api.get_rates()
+            ...
+            >>> api.get_rates('USD', ['EUR','CAD','GBP'],
+                              start_date="2019-09-12")
+            ...
+            ```
         """
         self._check_date_format(start_date)
         self._check_date_format(end_date)
@@ -141,10 +144,12 @@ class Api(object):
             (float): currency rate
 
         Examples:
+            ```
             >>> api.get_rate()
             394.55
-            >>> api.get_rate('USD', 'EUR', date="2019-09-12")
+            >>> api.get_rate('USD', 'EUR', start_date="2019-09-12")
             0.897
+            ```
         """
         res = self.get_rates(base=base, target_list=[target],
                              start_date=start_date, end_date=end_date)
