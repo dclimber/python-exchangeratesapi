@@ -9,6 +9,7 @@ class Api(object):
         'history': 'history',
     }
     params = {
+        'key': 'access_key',
         'base': 'base',
         'symbols': 'symbols',
         'start': 'start_at',
@@ -18,8 +19,9 @@ class Api(object):
     MIN_YEAR = 1999
     supported_currencies = None
 
-    def __init__(self):
+    def __init__(self, API_KEY):
         """Populate supported currencies list."""
+        self.API_KEY = API_KEY
         rates = self.get_rates()['rates']
         self.supported_currencies = [cur for cur in rates]
 
@@ -37,10 +39,10 @@ class Api(object):
             (str): exchangeratesapi.io url
         """
         endpoint = ''
-        params = ''
+        params = '?{}={}'.format(self.params['key'], self.API_KEY)
         if start_date and end_date:
             endpoint = self.endpoints['history']
-            params = '?{}={}&{}={}'.format(self.params['start'], start_date,
+            params += '&{}={}&{}={}'.format(self.params['start'], start_date,
                                            self.params['end'], end_date)
         elif start_date:
             endpoint = start_date
@@ -48,18 +50,11 @@ class Api(object):
             # latest
             endpoint = self.endpoints['latest']
         if base:
-            base_params = '{}={}'.format(self.params['base'], base)
-            if params != '':
-                params += '&'
-            else:
-                params = '?'
+            base_params = '&{}={}'.format(self.params['base'], base)
             params += base_params
         if target_list:
-            if params != '':
-                params += '&'
-            else:
-                params = '?'
-            params += "symbols={}".format(",".join(target_list))
+            params += "&{}={}".format(self.params['symbols'],
+                                      ",".join(target_list))
         return self.API_URL.format(endpoint=endpoint, params=params)
 
     def _check_date_format(self, date):
