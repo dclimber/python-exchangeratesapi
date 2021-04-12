@@ -2,6 +2,11 @@ import requests
 from datetime import datetime
 
 
+class ExchangeRatesApiException(Exception):
+    """ExchangeRatesApiException"""
+    pass
+
+
 class Api(object):
     API_URL = 'https://api.exchangeratesapi.io/v1/{endpoint}{params}'
     endpoints = {
@@ -67,6 +72,24 @@ class Api(object):
         if date:
             return datetime.strptime(date, self.DATE_FORMAT)
 
+    def _get_error_message(error):
+        """Method to get error message for raising Exception"""
+        # Note: code and message are in root_url/v1
+        # While code, type, and info are in root_url
+        # But the docs has not been updated and it shows
+        # code and info in error
+        # The worse part is each key has a different meaning
+        # in different scenario.
+        error_message = 'Web Message: {} - {}. '
+        error_message += 'https://exchangeratesapi.io/documentation/#errors'
+        code = error.get('code', None)
+        message = error.get('message', None)
+        info = error.get('info', None)
+        if message:
+            return error_message.format(code, message)
+        else:
+            return error_message.format(code, info)
+
     def get_rates(self, base=None, target_list=[],
                   start_date=None, end_date=None):
         """Method to get exchange rates for a given currency
@@ -94,7 +117,9 @@ class Api(object):
         if resp.status_code == 200:
             return resp.json()
         else:
-            return resp.json(['error'])
+            error = resp.json()['error']
+            error_message = self._get_error_message(error)
+            raise ExchangeRatesApiException(error_message)
 
     def get_rate(self, base='EUR', target='USD',
                  start_date=None, end_date=None):
