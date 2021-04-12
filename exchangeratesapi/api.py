@@ -11,14 +11,19 @@ class Api(object):
     API_URL = 'https://api.exchangeratesapi.io/v1/{endpoint}{params}'
     endpoints = {
         'latest': 'latest',
-        'history': 'history',
+        #'history': 'history',
+        'timeseries': 'timeseries',
+        'symbols': 'symbols',
+        'convert': 'convert',
+        'fluctuation': 'fluctuation',
+        'historical': '{date}', #YYYY-MM-DD
     }
     params = {
         'key': 'access_key',
         'base': 'base',
         'symbols': 'symbols',
-        'start': 'start_at',
-        'end': 'end_at',
+        'start': 'start_date',
+        'end': 'end_date',
     }
     DATE_FORMAT = '%Y-%m-%d'
     MIN_YEAR = 1999
@@ -46,11 +51,11 @@ class Api(object):
         endpoint = ''
         params = '?{}={}'.format(self.params['key'], self.API_KEY)
         if start_date and end_date:
-            endpoint = self.endpoints['history']
+            endpoint = self.endpoints['timeseries']
             params += '&{}={}&{}={}'.format(self.params['start'], start_date,
                                            self.params['end'], end_date)
         elif start_date:
-            endpoint = start_date
+            endpoint = self.params['historical'].format(date=start_date)
         else:
             # latest
             endpoint = self.endpoints['latest']
