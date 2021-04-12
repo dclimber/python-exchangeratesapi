@@ -3,7 +3,7 @@ from datetime import datetime
 
 
 class Api(object):
-    API_URL = 'https://api.exchangeratesapi.io/{endpoint}{params}'
+    API_URL = 'https://api.exchangeratesapi.io/v1/{endpoint}{params}'
     endpoints = {
         'latest': 'latest',
         'history': 'history',
