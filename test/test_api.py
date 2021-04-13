@@ -10,56 +10,61 @@ api = Api(access_key)
 
 def test_get_api_url_latest(base_url):
     url = api._get_api_url(None, None, None, None)
-    assert url == '{}latest'.format(base_url)
+    assert url == '{}latest?access_key={}'.format(
+                    base_url, access_key)
 
 
 def test_get_api_url_one_latest_targ(base_url, targets):
     url = api._get_api_url(None, targets, None, None)
-    assert url == '{}latest?symbols={}'.format(base_url,
-                    ",".join(targets))
+    assert url == '{}latest?access_key={}&symbols={}'.format(
+                    base_url, access_key, ",".join(targets))
 
 
 def test_get_api_url_one_date(base_url, start_date):
     url = api._get_api_url(None, None, start_date, None)
-    assert url == '{}{}'.format(base_url, start_date)
+    assert url == '{}{}?access_key={}'.format(base_url, start_date, access_key)
 
 
 def test_get_api_url_one_date_targ(base_url, start_date, targets):
     url = api._get_api_url(None, targets, start_date, None)
-    assert url == '{}{}?symbols={}'.format(
-                    base_url, start_date, ",".join(targets))
+    assert url == '{}{}?access_key={}&symbols={}'.format(
+                    base_url, start_date, access_key, ",".join(targets))
 
 
 def test_get_api_url_two_dates(base_url, start_date, end_date):
     url = api._get_api_url(None, None, start_date=start_date,
                            end_date=end_date)
-    assert url == ('{}history?start_at={}&end_at={}'.format(
-                    base_url, start_date, end_date))
+    assert url == ('{}history?access_key={}&start_date={}&end_date={}'
+                    .format(base_url, access_key, start_date, end_date))
 
 
 def test_get_api_url_two_dates_targ(base_url, start_date, end_date, targets):
     url = api._get_api_url(None, targets, start_date=start_date,
                            end_date=end_date)
-    assert url == ('{}history?start_at={}&end_at={}&symbols={}'.format(
-                    base_url, start_date, end_date, ",".join(targets)))
+    assert url == ('{}history?access_key={}&start_date={}&end_date={}'
+                    '&symbols={}'.format(base_url, access_key, start_date,
+                    end_date, ",".join(targets)))
 
 
 def test_get_api_url_latest_curr(base_url, usd):
     url = api._get_api_url(usd, None, None, None)
-    assert url == '{}latest?base={}'.format(base_url, usd)
+    assert url == '{}latest?access_key={}&base={}'.format(
+                    base_url, access_key, usd)
 
 
 def test_get_api_url_one_date_curr(base_url, usd, start_date):
     url = api._get_api_url(usd, None, start_date, None)
-    assert url == '{}{}?base={}'.format(base_url, start_date, usd)
+    assert url == '{}{}?access_key={}base={}'.format(
+                    base_url, start_date, access_key, usd)
 
 
 def test_get_api_url_two_dates_curr_targ(base_url, usd, start_date,
                                          end_date, targets):
     url = api._get_api_url(usd, targets, start_date=start_date,
                            end_date=end_date)
-    assert url == ('{}history?start_at={}&end_at={}&base={}&symbols={}'.format(
-                    base_url, start_date, end_date, usd, ",".join(targets)))
+    assert url == ('{}history?access_key={}&start_date={}&end_date={}'
+                    '&base={}&symbols={}'.format(base_url, access_key,
+                    start_date, end_date, usd, ",".join(targets)))
 
 
 def test_check_date_format(start_date):
