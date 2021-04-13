@@ -2,6 +2,11 @@ import pytest
 
 
 @pytest.fixture
+def base_url():
+    return 'https://api.exchangeratesapi.io/v1/'
+
+
+@pytest.fixture
 def start_date():
     return '2014-03-26'
 

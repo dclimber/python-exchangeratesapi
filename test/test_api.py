@@ -6,60 +6,58 @@ from exchangeratesapi import Api
 api = Api()
 
 
-def test_get_api_url_latest():
+def test_get_api_url_latest(base_url):
     url = api._get_api_url(None, None, None, None)
-    assert url == 'https://api.exchangeratesapi.io/latest'
+    assert url == '{}latest'.format(base_url)
 
 
-def test_get_api_url_one_latest_targ(targets):
+def test_get_api_url_one_latest_targ(base_url, targets):
     url = api._get_api_url(None, targets, None, None)
-    assert url == 'https://api.exchangeratesapi.io/latest?symbols={}'.format(
+    assert url == '{}latest?symbols={}'.format(base_url,
                     ",".join(targets))
 
 
-def test_get_api_url_one_date(start_date):
+def test_get_api_url_one_date(base_url, start_date):
     url = api._get_api_url(None, None, start_date, None)
-    assert url == 'https://api.exchangeratesapi.io/{}'.format(start_date)
+    assert url == '{}{}'.format(base_url, start_date)
 
 
-def test_get_api_url_one_date_targ(start_date, targets):
+def test_get_api_url_one_date_targ(base_url, start_date, targets):
     url = api._get_api_url(None, targets, start_date, None)
-    assert url == 'https://api.exchangeratesapi.io/{}?symbols={}'.format(
-                    start_date, ",".join(targets))
+    assert url == '{}{}?symbols={}'.format(
+                    base_url, start_date, ",".join(targets))
 
 
-def test_get_api_url_two_dates(start_date, end_date):
+def test_get_api_url_two_dates(base_url, start_date, end_date):
     url = api._get_api_url(None, None, start_date=start_date,
                            end_date=end_date)
-    assert url == ('https://api.exchangeratesapi.io/history'
-                   '?start_at={}&end_at={}'.format(start_date, end_date))
+    assert url == ('{}history?start_at={}&end_at={}'.format(
+                    base_url, start_date, end_date))
 
 
-def test_get_api_url_two_dates_targ(start_date, end_date, targets):
+def test_get_api_url_two_dates_targ(base_url, start_date, end_date, targets):
     url = api._get_api_url(None, targets, start_date=start_date,
                            end_date=end_date)
-    assert url == ('https://api.exchangeratesapi.io/history'
-                   '?start_at={}&end_at={}&symbols={}'.format(
-                    start_date, end_date, ",".join(targets)))
+    assert url == ('{}history?start_at={}&end_at={}&symbols={}'.format(
+                    base_url, start_date, end_date, ",".join(targets)))
 
 
-def test_get_api_url_latest_curr(usd):
+def test_get_api_url_latest_curr(base_url, usd):
     url = api._get_api_url(usd, None, None, None)
-    assert url == 'https://api.exchangeratesapi.io/latest?base={}'.format(usd)
+    assert url == '{}latest?base={}'.format(base_url, usd)
 
 
-def test_get_api_url_one_date_curr(usd, start_date):
+def test_get_api_url_one_date_curr(base_url, usd, start_date):
     url = api._get_api_url(usd, None, start_date, None)
-    assert url == 'https://api.exchangeratesapi.io/{}?base={}'.format(
-                    start_date, usd)
+    assert url == '{}{}?base={}'.format(base_url, start_date, usd)
 
 
-def test_get_api_url_two_dates_curr_targ(usd, start_date, end_date, targets):
+def test_get_api_url_two_dates_curr_targ(base_url, usd, start_date,
+                                         end_date, targets):
     url = api._get_api_url(usd, targets, start_date=start_date,
                            end_date=end_date)
-    assert url == ('https://api.exchangeratesapi.io/history'
-                   '?start_at={}&end_at={}&base={}&symbols={}'.format(
-                    start_date, end_date, usd, ",".join(targets)))
+    assert url == ('{}history?start_at={}&end_at={}&base={}&symbols={}'.format(
+                    base_url, start_date, end_date, usd, ",".join(targets)))
 
 
 def test_check_date_format(start_date):
