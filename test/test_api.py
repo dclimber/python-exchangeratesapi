@@ -34,14 +34,14 @@ def test_get_api_url_one_date_targ(base_url, start_date, targets):
 def test_get_api_url_two_dates(base_url, start_date, end_date):
     url = api._get_api_url(None, None, start_date=start_date,
                            end_date=end_date)
-    assert url == ('{}history?access_key={}&start_date={}&end_date={}'
+    assert url == ('{}timeseries?access_key={}&start_date={}&end_date={}'
                     .format(base_url, access_key, start_date, end_date))
 
 
 def test_get_api_url_two_dates_targ(base_url, start_date, end_date, targets):
     url = api._get_api_url(None, targets, start_date=start_date,
                            end_date=end_date)
-    assert url == ('{}history?access_key={}&start_date={}&end_date={}'
+    assert url == ('{}timeseries?access_key={}&start_date={}&end_date={}'
                     '&symbols={}'.format(base_url, access_key, start_date,
                     end_date, ",".join(targets)))
 
@@ -54,7 +54,7 @@ def test_get_api_url_latest_curr(base_url, usd):
 
 def test_get_api_url_one_date_curr(base_url, usd, start_date):
     url = api._get_api_url(usd, None, start_date, None)
-    assert url == '{}{}?access_key={}base={}'.format(
+    assert url == '{}{}?access_key={}&base={}'.format(
                     base_url, start_date, access_key, usd)
 
 
@@ -62,7 +62,7 @@ def test_get_api_url_two_dates_curr_targ(base_url, usd, start_date,
                                          end_date, targets):
     url = api._get_api_url(usd, targets, start_date=start_date,
                            end_date=end_date)
-    assert url == ('{}history?access_key={}&start_date={}&end_date={}'
+    assert url == ('{}timeseries?access_key={}&start_date={}&end_date={}'
                     '&base={}&symbols={}'.format(base_url, access_key,
                     start_date, end_date, usd, ",".join(targets)))
 
