@@ -11,7 +11,6 @@ class Api(object):
     API_URL = 'https://api.exchangeratesapi.io/v1/{endpoint}{params}'
     endpoints = {
         'latest': 'latest',
-        #'history': 'history',
         'timeseries': 'timeseries',
         'symbols': 'symbols',
         'convert': 'convert',
@@ -29,9 +28,9 @@ class Api(object):
     MIN_YEAR = 1999
     supported_currencies = None
 
-    def __init__(self, API_KEY):
+    def __init__(self, api_key):
         """Populate supported currencies list."""
-        self.API_KEY = API_KEY
+        self.api_key = api_key
         rates = self.get_rates()['rates']
         self.supported_currencies = [cur for cur in rates]
 
@@ -49,7 +48,7 @@ class Api(object):
             (str): exchangeratesapi.io url
         """
         endpoint = ''
-        params = '?{}={}'.format(self.params['key'], self.API_KEY)
+        params = '?{}={}'.format(self.params['key'], self.api_key)
         if start_date and end_date:
             endpoint = self.endpoints['timeseries']
             params += '&{}={}&{}={}'.format(self.params['start'], start_date,
@@ -77,7 +76,7 @@ class Api(object):
         if date:
             return datetime.strptime(date, self.DATE_FORMAT)
 
-    def _get_error_message(error):
+    def _get_error_message(self, error):
         """Method to get error message for raising Exception"""
         # Note: code and message are in root_url/v1
         # While code, type, and info are in root_url
