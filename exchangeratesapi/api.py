@@ -75,7 +75,8 @@ class Api(object):
         if date:
             return datetime.strptime(date, self.DATE_FORMAT)
 
-    def _get_error_message(self, error):
+    @staticmethod
+    def _get_error_message(error):
         """Method to get error message for raising Exception"""
         # Note: code and message are in root_url/v1
         # While code, type, and info are in root_url
