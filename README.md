@@ -1,5 +1,5 @@
 # python-exchangeratesapi
-This is an unofficial wrapper for the awesome, free [ExchangeRatesAPI](https://exchangeratesapi.io/), which provides exchange rate lookups courtesy of the European Central Bank.
+This is an unofficial wrapper for the awesome, partly free [ExchangeRatesAPI](https://exchangeratesapi.io/), which provides exchange rate lookups courtesy of the European Central Bank.
 
 # Installation
 Either clone this repository into your project, or install with `pip`:
@@ -8,10 +8,11 @@ pip install python-exchangeratesapi
 ```
 
 # Usage
+First, you need to register at [ExchangeRatesAPI](https://exchangeratesapi.io/pricing/) for `ACCESS_KEY`.
 ```py
 from exchangeratesapi import Api
 
-api = Api()
+api = Api(ACCESS_KEY)
 
 # Get the latest foreign exchange rates:
 api.get_rates()
@@ -131,6 +132,6 @@ print(api.supported_currencies)
 # Supported currencies
 The list of currencies can be found at [European Central Bank's data set](https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/index.en.html).
 
-If your currency is not in the list, then the library will be of not use to you. You may try [openexchangerates.org API](https://github.com/metglobal/openexchangerates) or some other service.
+If your currency is not in the list, then the library will be of no use to you. You may try [openexchangerates.org API](https://github.com/metglobal/openexchangerates) or some other service.
 # License
 MIT
