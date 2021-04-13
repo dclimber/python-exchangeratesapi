@@ -31,8 +31,7 @@ class Api(object):
     def __init__(self, api_key):
         """Populate supported currencies list."""
         self.api_key = api_key
-        rates = self.get_rates()['rates']
-        self.supported_currencies = [cur for cur in rates]
+        self.supported_currencies = self._get_symbols()
 
     def _get_api_url(self, base, target_list, start_date, end_date):
         """Method to constuct api request url.
@@ -94,6 +93,22 @@ class Api(object):
         else:
             return error_message.format(code, info)
 
+    def _get_url(self, url):
+        resp = requests.get(url)
+        if resp.status_code == 200:
+            return resp.json()
+        else:
+            error = resp.json()['error']
+            error_message = self._get_error_message(error)
+            raise ExchangeRatesApiException(error_message)
+
+    def _get_symbols(self):
+        endpoint = self.endpoints['symbols']
+        params = '?{}={}'.format(self.params['key'], self.api_key)
+        url = self.API_URL.format(endpoint=endpoint, params=params)
+        res = self._get_url(url)
+        return tuple(res['symbols'].keys())
+
     def get_rates(self, base=None, target_list=[],
                   start_date=None, end_date=None):
         """Method to get exchange rates for a given currency
@@ -120,14 +135,8 @@ class Api(object):
         self._check_date_format(start_date)
         self._check_date_format(end_date)
         url = self._get_api_url(base, target_list, start_date, end_date)
-        resp = requests.get(url)
-        if resp.status_code == 200:
-            return resp.json()
-        else:
-            error = resp.json()['error']
-            error_message = self._get_error_message(error)
-            raise ExchangeRatesApiException(error_message)
-
+        return self._get_url(url)
+        
     def get_rate(self, base='EUR', target='USD',
                  start_date=None, end_date=None):
         """Method to get exchange rate for a given currency
