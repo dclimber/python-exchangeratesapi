@@ -8,7 +8,7 @@ class ExchangeRatesApiException(Exception):
 
 
 class Api(object):
-    API_URL = 'https://api.exchangeratesapi.io/v1/{endpoint}{params}'
+    API_URL = 'http://api.exchangeratesapi.io/v1/{endpoint}{params}'
     endpoints = {
         'latest': 'latest',
         'timeseries': 'timeseries',
@@ -53,7 +53,7 @@ class Api(object):
             params += '&{}={}&{}={}'.format(self.params['start'], start_date,
                                            self.params['end'], end_date)
         elif start_date:
-            endpoint = self.params['historical'].format(date=start_date)
+            endpoint = self.endpoints['historical'].format(date=start_date)
         else:
             # latest
             endpoint = self.endpoints['latest']

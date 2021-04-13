@@ -1,9 +1,11 @@
 import datetime
+import os
 import pytest
 from exchangeratesapi import Api
 
 
-api = Api()
+access_key = os.environ['EXCHANGERATESAPI_FREE_KEY']
+api = Api(access_key)
 
 
 def test_get_api_url_latest(base_url):

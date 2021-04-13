@@ -3,7 +3,7 @@ import pytest
 
 @pytest.fixture
 def base_url():
-    return 'https://api.exchangeratesapi.io/v1/'
+    return 'http://api.exchangeratesapi.io/v1/'
 
 
 @pytest.fixture
