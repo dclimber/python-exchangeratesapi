@@ -8,7 +8,7 @@ class ExchangeRatesApiException(Exception):
 
 
 class Api(object):
-    API_URL = 'http://api.exchangeratesapi.io/v1/{endpoint}{params}'
+    API_URL = 'https://api.exchangeratesapi.io/v1/{endpoint}{params}'
     endpoints = {
         'latest': 'latest',
         'timeseries': 'timeseries',
