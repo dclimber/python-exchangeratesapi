@@ -78,12 +78,6 @@ class Api(object):
     @staticmethod
     def _get_error_message(error):
         """Method to get error message for raising Exception"""
-        # Note: code and message are in root_url/v1
-        # While code, type, and info are in root_url
-        # But the docs has not been updated and it shows
-        # code and info in error
-        # The worse part is each key has a different meaning
-        # in different scenario.
         error_message = 'Web Message: {} - {}. '
         error_message += 'https://exchangeratesapi.io/documentation/#errors'
         code = error.get('code', None)
