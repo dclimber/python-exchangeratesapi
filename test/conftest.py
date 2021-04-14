@@ -66,6 +66,11 @@ def gbp():
 
 
 @pytest.fixture
+def eur():
+    return 'EUR'
+
+
+@pytest.fixture
 def usd_to_gbp_start_date():
     # rate for USD and GBP on start_date (26th)
     return 0.603114

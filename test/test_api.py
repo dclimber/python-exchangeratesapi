@@ -183,8 +183,12 @@ def test_supported_currencies(supported_currencies):
     assert api.supported_currencies == supported_currencies
 
 
-def test_is_currency_supported(usd):
+def test_is_currency_supported_eur(usd):
     assert api.is_currency_supported(usd)
+
+
+def test_is_currency_supported_eur(eur):
+    assert api.is_currency_supported(eur)
 
 
 def test_is_currency_supported_fail(usd):
