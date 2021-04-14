@@ -99,8 +99,8 @@ def test_get_rates_two_date(start_date, end_date, middle_date):
     assert type(res) == dict
     assert 'rates' in res
     assert 'base' in res
-    assert 'start_at' in res
-    assert 'end_at' in res
+    assert 'start_date' in res
+    assert 'end_date' in res
     assert type(res['rates']) == dict
     assert start_date in res['rates']
     assert end_date in res['rates']
@@ -144,21 +144,21 @@ def test_get_rate_targ(gbp):
     assert type(res) == float
 
 
-def test_get_rate_targ_one_date(gbp, start_date, eur_to_gbp_next_date):
-    res = api.get_rate(target=gbp, start_date=start_date)
+def test_get_rate_targ_one_date(gbp, next_date, eur_to_gbp_next_date):
+    res = api.get_rate(target=gbp, start_date=next_date)
     assert res == eur_to_gbp_next_date  # rate for that date
 
 
 def test_get_rate_curr_targ_one_date(usd, gbp, start_date,
-                                     usd_to_gbp_next_date):
+                                     usd_to_gbp_start_date):
     res = api.get_rate(usd, gbp, start_date)
-    assert res == usd_to_gbp_next_date  # rate for that date
+    assert res == usd_to_gbp_start_date  # rate for that date
 
 
 def test_get_rate_curr_targ_two_dates(usd, gbp, start_date, end_date,
-                                      usd_to_gbp_next_date):
+                                      usd_to_gbp_start_date):
     res = api.get_rate(usd, gbp, start_date, end_date)
-    assert res[start_date][gbp] == usd_to_gbp_next_date
+    assert res[start_date][gbp] == usd_to_gbp_start_date
 
 
 def test_supported_currencies(supported_currencies):

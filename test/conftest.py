@@ -75,18 +75,18 @@ def gbp():
 
 
 @pytest.fixture
-def usd_to_gbp_next_date():
-    # rate for USD and GBP on start_date + 1 day (27th)
-    return 0.604452179
+def usd_to_gbp_start_date():
+    # rate for USD and GBP on start_date (26th)
+    return 0.603114
 
 
 @pytest.fixture
 def usd_to_eur_next_date():
     # rate for EUR and USD on start_date + 1 day (27th)
-    return 0.7268498328
+    return 0.727658
 
 
 @pytest.fixture
 def eur_to_gbp_next_date():
     # rate for EUR and GBP on start_date + 1 day (27th)
-    return 0.8336
+    return 0.8275
