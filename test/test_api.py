@@ -1,7 +1,7 @@
 import datetime
 import os
 import pytest
-from exchangeratesapi import Api
+from exchangeratesapi import Api, ExchangeRatesApiException
 
 
 access_key = os.environ['EXCHANGERATESAPI_FREE_KEY']
@@ -74,6 +74,24 @@ def test_check_date_format(start_date):
 def test_check_date_format_fail():
     with pytest.raises(ValueError):
         api._check_date_format("22.02.2012")
+
+
+def test_get_url(base_url):
+    url = api._get_api_url(None, None, None, None)
+    res = api._get_url(url)
+    assert type(res)==dict
+
+
+def test_get_url_fail(base_url):
+    with pytest.raises(ExchangeRatesApiException):
+        api._get_url(base_url)
+
+
+def test_get_error_message(sample_error):
+    error_message = api._get_error_message(sample_error)
+    assert sample_error['code'] in error_message
+    assert sample_error['message'] in error_message
+    assert 'https://exchangeratesapi.io/documentation/#errors' in error_message
 
 
 def test_get_rates():

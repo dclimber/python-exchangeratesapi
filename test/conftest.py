@@ -27,15 +27,6 @@ def middle_date():
 
 
 @pytest.fixture
-def old_supported_currencies():
-    # for 02.04.2020
-    return ['CAD', 'HKD', 'ISK', 'PHP', 'DKK', 'HUF', 'CZK', 'AUD', 'RON',
-            'SEK', 'IDR', 'INR', 'BRL', 'RUB', 'HRK', 'JPY', 'THB', 'CHF',
-            'SGD', 'PLN', 'BGN', 'TRY', 'CNY', 'NOK', 'NZD', 'ZAR', 'USD',
-            'MXN', 'ILS', 'GBP', 'KRW', 'MYR']
-
-
-@pytest.fixture
 def supported_currencies():
     # for 2021-04-13
     return ('AED', 'AFN', 'ALL', 'AMD', 'ANG', 'AOA', 'ARS', 'AUD', 'AWG',
@@ -90,3 +81,13 @@ def usd_to_eur_next_date():
 def eur_to_gbp_next_date():
     # rate for EUR and GBP on start_date + 1 day (27th)
     return 0.8275
+
+
+@pytest.fixture
+def sample_error():
+    # Error when key is not provided
+    error = {
+                "code": "missing_access_key",
+                "message": "You have not supplied an API Access Key."
+            }
+    return error
