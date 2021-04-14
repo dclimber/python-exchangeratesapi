@@ -4,7 +4,7 @@ import pytest
 from exchangeratesapi import Api, ExchangeRatesApiException
 
 
-access_key = os.environ['EXCHANGERATESAPI_FREE_KEY']
+access_key = os.environ['EXCHANGERATESAPI_KEY']
 api = Api(access_key)
 
 

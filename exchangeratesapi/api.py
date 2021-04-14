@@ -1,4 +1,5 @@
 import requests
+import os
 from datetime import datetime
 
 
@@ -8,6 +9,7 @@ class ExchangeRatesApiException(Exception):
 
 
 class Api(object):
+    API_KEY = os.getenv('EXCHANGERATESAPI_KEY')
     API_URL = 'https://api.exchangeratesapi.io/v1/{endpoint}{params}'
     endpoints = {
         'latest': 'latest',
@@ -28,8 +30,12 @@ class Api(object):
     MIN_YEAR = 1999
     supported_currencies = None
 
-    def __init__(self, api_key):
+    def __init__(self, api_key=API_KEY):
         """Populate supported currencies list."""
+        if not api_key:
+            message = ('exchangeratesapi KEY is missing. '
+                       'Go to https://manage.exchangeratesapi.io/dashboard')
+            raise ExchangeRatesApiException(message)
         self.api_key = api_key
         self.supported_currencies = self._get_symbols()
 
