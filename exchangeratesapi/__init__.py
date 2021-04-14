@@ -1,1 +1,1 @@
-from exchangeratesapi.api import Api
+from exchangeratesapi.api import Api, ExchangeRatesApiException
