@@ -205,8 +205,24 @@ class Api(object):
         else:
             return amount * self.get_rate(base, target, date)
 
-    def fluctuation():
-        pass
+    def fluctuation(self, base, target, start_date=None, end_date=None):
+        endpoint = self.endpoints['fluctuation']
+        params = self.START_PARAM
+        params += '&{}={}&{}={}'.format(self.params['base'], base,
+                  self.params['symbols'], ','.join(list(target)))
+        if start_date:
+            if end_date:
+                params += '&{}={}&{}={}'.format(self.params['start'],
+                          start_date, self.params['end'], end_date)
+            else:
+                raise ExchangeRatesApiException(
+                    "end_date needs to be specified along with start_date.")
+        url = self.API_URL.format(endpoint=endpoint, params=params)
+        res = self._get_url(url)
+        if type(target) == list:
+            return res['rates']
+        else:
+            return res['rates'].get(target)
 
     def get_rate(self, base='EUR', target='USD',
                  start_date=None, end_date=None):
@@ -234,7 +250,7 @@ class Api(object):
                              start_date=start_date, end_date=end_date)
         if end_date:
             return res['rates']
-        return res['rates'][target]
+        return res['rates'].get(target)
 
     def is_currency_supported(self, currency):
         return currency in self.supported_currencies
