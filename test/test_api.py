@@ -79,7 +79,7 @@ def test_check_date_format_fail():
 def test_get_url(base_url):
     url = api._get_api_url(None, None, None, None)
     res = api._get_url(url)
-    assert type(res)==dict
+    assert type(res) == dict
 
 
 def test_get_url_fail(base_url):
@@ -180,12 +180,40 @@ def test_get_rate_curr_targ_two_dates(usd, gbp, start_date, end_date,
 
 
 def test_convert(amount, usd, eur, start_date, _25_usd_to_eur_start_date):
-    assert api.convert(amount, usd, eur, start_date)==_25_usd_to_eur_start_date
+    assert (api.convert(amount, usd, eur, start_date)
+            == _25_usd_to_eur_start_date)
 
 
 def test_convert_bad_date_format(amount, usd, eur):
     with pytest.raises(ValueError):
         api.convert(amount, usd, eur, '2017.03.23')
+
+
+def test_fluctuation_str_targ(eur, usd):
+    res = api.fluctuation(eur, usd)
+    assert 'start_rate' in res
+    assert 'end_rate' in res
+    assert 'change' in res
+    assert type(res['change_pct']) == float
+
+
+def test_fluctuation_list_targ(eur, usd, gbp):
+    res = api.fluctuation(usd, [eur, gbp])
+    assert eur in res
+    assert gbp in res
+    assert type(res[eur]) == dict
+    assert len(res[gbp]) == 4
+
+
+def test_fluctuation_with_dates(gbp, usd, start_date, end_date,
+                                gbp_usd_change_pct_start_end):
+    res = api.fluctuation(gbp, usd, start_date, end_date)
+    assert res['change_pct'] == 1.7378
+
+
+def test_fluctuation_start_date_only(eur, usd, start_date):
+    with pytest.raises(ExchangeRatesApiException):
+        api.fluctuation(eur, usd, start_date)
 
 
 def test_supported_currencies(supported_currencies):

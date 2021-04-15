@@ -234,10 +234,11 @@ class Api(object):
             return amount * self.get_rate(base, target, date)
 
     def fluctuation(self, base, target, start_date=None, end_date=None):
+        target_list = target if type(target)==list else [target]
         endpoint = self.endpoints['fluctuation']
         params = self.START_PARAM
         params += '&{}={}&{}={}'.format(self.params['base'], base,
-                  self.params['symbols'], ','.join(list(target)))
+                  self.params['symbols'], ','.join(target_list))
         if start_date:
             if end_date:
                 params += '&{}={}&{}={}'.format(self.params['start'],

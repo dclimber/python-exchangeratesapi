@@ -100,6 +100,12 @@ def _25_usd_to_eur_start_date():
 
 
 @pytest.fixture
+def gbp_usd_change_pct_start_end():
+    # change_pct of gbp_usd from start_date to end_date
+    return 1.7378
+
+
+@pytest.fixture
 def sample_error():
     # Error when key is not provided
     error = {
