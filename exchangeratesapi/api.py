@@ -234,6 +234,19 @@ class Api(object):
             return amount * self.get_rate(base, target, date)
 
     def fluctuation(self, base, target, start_date=None, end_date=None):
+        """Method to get currency's change parameters (margin and percentage),
+        optionally between two specified dates.
+
+        Args:
+            param1 (obj): self
+            param2 (str): base
+            param3 (str/list): target
+            param4 (str): start_date
+            param5 (str): end_date
+
+        Returns:
+            (dict): fluctuation
+        """
         target_list = target if type(target)==list else [target]
         endpoint = self.endpoints['fluctuation']
         params = self.START_PARAM
@@ -254,4 +267,13 @@ class Api(object):
             return res['rates'].get(target)
 
     def is_currency_supported(self, currency):
+        """Method to check if currency is supported.
+        
+        Args:
+            param1 (obj): self
+            param2 (str): currency
+
+        Returns:
+            (bool): if currency is supported
+        """
         return currency in self.supported_currencies
