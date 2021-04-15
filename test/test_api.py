@@ -179,6 +179,15 @@ def test_get_rate_curr_targ_two_dates(usd, gbp, start_date, end_date,
     assert res[start_date][gbp] == usd_to_gbp_start_date
 
 
+def test_convert(amount, usd, eur, start_date, _25_usd_to_eur_start_date):
+    assert api.convert(amount, usd, eur, start_date)==_25_usd_to_eur_start_date
+
+
+def test_convert_bad_date_format(amount, usd, eur):
+    with pytest.raises(ValueError):
+        api.convert(amount, usd, eur, '2017.03.23')
+
+
 def test_supported_currencies(supported_currencies):
     assert api.supported_currencies == supported_currencies
 

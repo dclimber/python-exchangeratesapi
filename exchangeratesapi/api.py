@@ -10,6 +10,7 @@ class ExchangeRatesApiException(Exception):
 
 class Api(object):
     API_KEY = os.getenv('EXCHANGERATESAPI_KEY')
+    API_TIER = 1
     API_URL = 'https://api.exchangeratesapi.io/v1/{endpoint}{params}'
     endpoints = {
         'latest': 'latest',
@@ -25,6 +26,10 @@ class Api(object):
         'symbols': 'symbols',
         'start': 'start_date',
         'end': 'end_date',
+        'from': 'from',
+        'to': 'to',
+        'amount': 'amount',
+        'date': 'date',
     }
     DATE_FORMAT = '%Y-%m-%d'
     MIN_YEAR = 1999
@@ -37,6 +42,7 @@ class Api(object):
                        'Go to https://manage.exchangeratesapi.io/dashboard')
             raise ExchangeRatesApiException(message)
         self.api_key = api_key
+        self.START_PARAM = '?{}={}'.format(self.params['key'], self.api_key)
         self.supported_currencies = self._get_symbols()
 
     def _get_api_url(self, base, target_list, start_date, end_date):
@@ -53,7 +59,7 @@ class Api(object):
             (str): exchangeratesapi.io url
         """
         endpoint = ''
-        params = '?{}={}'.format(self.params['key'], self.api_key)
+        params = self.START_PARAM
         if start_date and end_date:
             endpoint = self.endpoints['timeseries']
             params += '&{}={}&{}={}'.format(self.params['start'], start_date,
@@ -105,7 +111,7 @@ class Api(object):
 
     def _get_symbols(self):
         endpoint = self.endpoints['symbols']
-        params = '?{}={}'.format(self.params['key'], self.api_key)
+        params = self.START_PARAM
         url = self.API_URL.format(endpoint=endpoint, params=params)
         res = self._get_url(url)
         return tuple(res['symbols'].keys())
@@ -137,7 +143,28 @@ class Api(object):
         self._check_date_format(end_date)
         url = self._get_api_url(base, target_list, start_date, end_date)
         return self._get_url(url)
-        
+    
+    def convert(self, amount, base, target, date=None):
+        # For free keys, this could be gotten from get_rate method
+        # and multiplication with amount
+        if self.API_TIER > 0:
+            endpoint = self.endpoints['convert']
+            params = self.START_PARAM
+            params += '&{}={}&{}={}&{}={}'.format(self.params['from'],
+                      base, self.params['to'], target, self.params['amount'],
+                      amount)
+            if date:
+                self._check_date_format(date)
+                params+= '&{}={}'.format(self.params['date'], date)
+            url = self.API_URL.format(endpoint=endpoint, params=params)
+            res = self._get_url(url)
+            return res['result']
+        else:
+            return amount * self.get_rate(base, target, date)
+
+    def fluctuation():
+        pass
+
     def get_rate(self, base='EUR', target='USD',
                  start_date=None, end_date=None):
         """Method to get exchange rate for a given currency

@@ -89,6 +89,17 @@ def eur_to_gbp_next_date():
 
 
 @pytest.fixture
+def amount():
+    return 25
+
+
+@pytest.fixture
+def _25_usd_to_eur_start_date():
+    # 25 USD in EUR on start_date (26th)
+    return 18.13265
+
+
+@pytest.fixture
 def sample_error():
     # Error when key is not provided
     error = {
