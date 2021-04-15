@@ -89,7 +89,14 @@ class Api(object):
 
     @staticmethod
     def _get_error_message(error):
-        """Method to get error message for raising Exception"""
+        """Method to get error message for raising Exception.
+
+        Args:
+            param1 (dict): error
+            
+        Returns:
+            (str): error message
+        """
         error_message = 'Web Message: {} - {}. '
         error_message += 'https://exchangeratesapi.io/documentation/#errors'
         code = error.get('code', None)
@@ -101,6 +108,16 @@ class Api(object):
             return error_message.format(code, info)
 
     def _get_url(self, url):
+        """Method to send a get request to exchangeratesapi,
+
+        Args:
+            param1 (obj): self
+            param2 (str): url
+
+        Returns:
+            (dict): response
+            Raise ExchangeRatesApiException if there's bad status code.
+        """
         resp = requests.get(url)
         if resp.status_code == 200:
             return resp.json()
@@ -110,6 +127,14 @@ class Api(object):
             raise ExchangeRatesApiException(error_message)
 
     def _get_symbols(self):
+        """Get supported symbols in exchangeratesapi.
+
+        Args:
+            param1 (obj): self
+
+        Returns:
+            (tuple): supported currencies/symbols
+        """
         endpoint = self.endpoints['symbols']
         params = self.START_PARAM
         url = self.API_URL.format(endpoint=endpoint, params=params)
@@ -145,8 +170,26 @@ class Api(object):
         return self._get_url(url)
     
     def convert(self, amount, base, target, date=None):
-        # For free keys, this could be gotten from get_rate method
-        # and multiplication with amount
+        """Method to convert a given amount of a currency
+        to another on a given date or latest.
+
+        Args:
+            param1 (obj): self
+            param2 (int/float): amount
+            param3 (str): base
+            param4 (str): target
+            param5 (str): date
+
+        Returns:
+            (float): converted amount
+
+        Examples:
+            ```
+            >>> api.convert(10, 'EUR', 'USD')
+            11.9655
+            >>> api.convert(25, 'USD', 'EUR', '2014-03-26')
+            18.13265
+        """
         if self.API_TIER > 0:
             endpoint = self.endpoints['convert']
             params = self.START_PARAM
