@@ -169,6 +169,34 @@ class Api(object):
         url = self._get_api_url(base, target_list, start_date, end_date)
         return self._get_url(url)
     
+    def get_rate(self, base='EUR', target='USD',
+                 start_date=None, end_date=None):
+        """Method to get exchange rate for a given currency
+        for a given date.
+
+        Args:
+            param1 (obj): self
+            param2 (str): date string in format dd.mm.YYYY
+            param3 (str): 3-letter currency code
+            param4 (str): 3-letter currency code
+
+        Returns:
+            (float): currency rate
+
+        Examples:
+            ```
+            >>> api.get_rate()
+            394.55
+            >>> api.get_rate('USD', 'EUR', start_date="2019-09-12")
+            0.897
+            ```
+        """
+        res = self.get_rates(base=base, target_list=[target],
+                             start_date=start_date, end_date=end_date)
+        if end_date:
+            return res['rates']
+        return res['rates'].get(target)
+
     def convert(self, amount, base, target, date=None):
         """Method to convert a given amount of a currency
         to another on a given date or latest.
@@ -223,34 +251,6 @@ class Api(object):
             return res['rates']
         else:
             return res['rates'].get(target)
-
-    def get_rate(self, base='EUR', target='USD',
-                 start_date=None, end_date=None):
-        """Method to get exchange rate for a given currency
-        for a given date.
-
-        Args:
-            param1 (obj): self
-            param2 (str): date string in format dd.mm.YYYY
-            param3 (str): 3-letter currency code
-            param4 (str): 3-letter currency code
-
-        Returns:
-            (float): currency rate
-
-        Examples:
-            ```
-            >>> api.get_rate()
-            394.55
-            >>> api.get_rate('USD', 'EUR', start_date="2019-09-12")
-            0.897
-            ```
-        """
-        res = self.get_rates(base=base, target_list=[target],
-                             start_date=start_date, end_date=end_date)
-        if end_date:
-            return res['rates']
-        return res['rates'].get(target)
 
     def is_currency_supported(self, currency):
         return currency in self.supported_currencies
