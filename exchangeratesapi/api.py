@@ -10,6 +10,7 @@ class ExchangeRatesApiException(Exception):
 
 class Api(object):
     API_KEY = os.getenv('EXCHANGERATESAPI_KEY')
+    API_TIER = 1
     API_URL = 'https://api.exchangeratesapi.io/v1/{endpoint}{params}'
     endpoints = {
         'latest': 'latest',
@@ -25,6 +26,10 @@ class Api(object):
         'symbols': 'symbols',
         'start': 'start_date',
         'end': 'end_date',
+        'from': 'from',
+        'to': 'to',
+        'amount': 'amount',
+        'date': 'date',
     }
     DATE_FORMAT = '%Y-%m-%d'
     MIN_YEAR = 1999
@@ -37,6 +42,7 @@ class Api(object):
                        'Go to https://manage.exchangeratesapi.io/dashboard')
             raise ExchangeRatesApiException(message)
         self.api_key = api_key
+        self.START_PARAM = '?{}={}'.format(self.params['key'], self.api_key)
         self.supported_currencies = self._get_symbols()
 
     def _get_api_url(self, base, target_list, start_date, end_date):
@@ -53,7 +59,7 @@ class Api(object):
             (str): exchangeratesapi.io url
         """
         endpoint = ''
-        params = '?{}={}'.format(self.params['key'], self.api_key)
+        params = self.START_PARAM
         if start_date and end_date:
             endpoint = self.endpoints['timeseries']
             params += '&{}={}&{}={}'.format(self.params['start'], start_date,
@@ -83,7 +89,14 @@ class Api(object):
 
     @staticmethod
     def _get_error_message(error):
-        """Method to get error message for raising Exception"""
+        """Method to get error message for raising Exception.
+
+        Args:
+            param1 (dict): error
+            
+        Returns:
+            (str): error message
+        """
         error_message = 'Web Message: {} - {}. '
         error_message += 'https://exchangeratesapi.io/documentation/#errors'
         code = error.get('code', None)
@@ -95,6 +108,16 @@ class Api(object):
             return error_message.format(code, info)
 
     def _get_url(self, url):
+        """Method to send a get request to exchangeratesapi,
+
+        Args:
+            param1 (obj): self
+            param2 (str): url
+
+        Returns:
+            (dict): response
+            Raise ExchangeRatesApiException if there's bad status code.
+        """
         resp = requests.get(url)
         if resp.status_code == 200:
             return resp.json()
@@ -104,8 +127,16 @@ class Api(object):
             raise ExchangeRatesApiException(error_message)
 
     def _get_symbols(self):
+        """Get supported symbols in exchangeratesapi.
+
+        Args:
+            param1 (obj): self
+
+        Returns:
+            (tuple): supported currencies/symbols
+        """
         endpoint = self.endpoints['symbols']
-        params = '?{}={}'.format(self.params['key'], self.api_key)
+        params = self.START_PARAM
         url = self.API_URL.format(endpoint=endpoint, params=params)
         res = self._get_url(url)
         return tuple(res['symbols'].keys())
@@ -137,7 +168,7 @@ class Api(object):
         self._check_date_format(end_date)
         url = self._get_api_url(base, target_list, start_date, end_date)
         return self._get_url(url)
-        
+    
     def get_rate(self, base='EUR', target='USD',
                  start_date=None, end_date=None):
         """Method to get exchange rate for a given currency
@@ -164,7 +195,85 @@ class Api(object):
                              start_date=start_date, end_date=end_date)
         if end_date:
             return res['rates']
-        return res['rates'][target]
+        return res['rates'].get(target)
+
+    def convert(self, amount, base, target, date=None):
+        """Method to convert a given amount of a currency
+        to another on a given date or latest.
+
+        Args:
+            param1 (obj): self
+            param2 (int/float): amount
+            param3 (str): base
+            param4 (str): target
+            param5 (str): date
+
+        Returns:
+            (float): converted amount
+
+        Examples:
+            ```
+            >>> api.convert(10, 'EUR', 'USD')
+            11.9655
+            >>> api.convert(25, 'USD', 'EUR', '2014-03-26')
+            18.13265
+        """
+        if self.API_TIER > 0:
+            endpoint = self.endpoints['convert']
+            params = self.START_PARAM
+            params += '&{}={}&{}={}&{}={}'.format(self.params['from'],
+                      base, self.params['to'], target, self.params['amount'],
+                      amount)
+            if date:
+                self._check_date_format(date)
+                params+= '&{}={}'.format(self.params['date'], date)
+            url = self.API_URL.format(endpoint=endpoint, params=params)
+            res = self._get_url(url)
+            return res['result']
+        else:
+            return amount * self.get_rate(base, target, date)
+
+    def fluctuation(self, base, target, start_date=None, end_date=None):
+        """Method to get currency's change parameters (margin and percentage),
+        optionally between two specified dates.
+
+        Args:
+            param1 (obj): self
+            param2 (str): base
+            param3 (str/list): target
+            param4 (str): start_date
+            param5 (str): end_date
+
+        Returns:
+            (dict): fluctuation
+        """
+        target_list = target if type(target)==list else [target]
+        endpoint = self.endpoints['fluctuation']
+        params = self.START_PARAM
+        params += '&{}={}&{}={}'.format(self.params['base'], base,
+                  self.params['symbols'], ','.join(target_list))
+        if start_date:
+            if end_date:
+                params += '&{}={}&{}={}'.format(self.params['start'],
+                          start_date, self.params['end'], end_date)
+            else:
+                raise ExchangeRatesApiException(
+                    "end_date needs to be specified along with start_date.")
+        url = self.API_URL.format(endpoint=endpoint, params=params)
+        res = self._get_url(url)
+        if type(target) == list:
+            return res['rates']
+        else:
+            return res['rates'].get(target)
 
     def is_currency_supported(self, currency):
+        """Method to check if currency is supported.
+        
+        Args:
+            param1 (obj): self
+            param2 (str): currency
+
+        Returns:
+            (bool): if currency is supported
+        """
         return currency in self.supported_currencies
